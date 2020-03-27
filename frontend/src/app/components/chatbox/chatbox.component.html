@@ -1,0 +1,22 @@
+<div class="main" fxLayout="column" fxLayoutAlign="start start">
+    <h2 fxFlex="nogrow">Chat</h2>
+    <div class="scroll-box">
+        <div class="content-box">
+            <div *ngFor="let message of messages" class="chat-row">
+                <div class="chat-sender">
+                    {{ message.sender_name }}
+                </div>
+                <div class="chat-message">
+                    <app-chat-message [message]="message.message"></app-chat-message>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chat-controls" fxLayout="row" fxLayoutAlign="start center">
+        <mat-form-field fxFlex="auto">
+            <input type="string" matInput [(ngModel)]="message" placeholder="message" (keyup.enter)="send()">
+        </mat-form-field>
+        <button fxFlex="nogrow" color="accent" mat-raised-button (click)="send()">send</button>
+    </div>
+</div>

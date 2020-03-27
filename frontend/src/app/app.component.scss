@@ -1,0 +1,33 @@
+
+.toolbar-wrap {
+    width: 100%;
+}
+
+mat-sidenav-container {
+    height: calc(100% - 64px);
+}
+
+@media print {
+    .main {
+        height: auto;
+        padding: 0;
+    }
+
+    mat-toolbar {
+        display: none;
+    }
+
+    mat-card {
+        max-height: auto;
+        overflow: unset;
+        width:100%;
+    }
+
+    mat-sidenav-container  {
+        height: auto;
+    }
+
+    mat-sidenav-content {
+        overflow: unset;
+    }
+}

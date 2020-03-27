@@ -1,0 +1,13 @@
+<div fxLayout="row" fxLayoutAlign="center center">
+    <div fxLayout="column" class="login-box">
+        <mat-form-field>
+            <input matInput type="text" placeholder="username" [(ngModel)]="username">
+        </mat-form-field>
+
+        <mat-form-field>
+            <input matInput type="password" placeholder="password" [(ngModel)]="password" (keydown.enter)="login()">
+        </mat-form-field>
+
+        <button mat-raised-button color="accent" (click)="login()">Login</button>
+    </div>
+</div>

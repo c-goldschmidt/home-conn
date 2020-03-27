@@ -1,0 +1,26 @@
+<ng-template #mention let-content="content" let-value="value">
+    <span class="mention-template">
+        <app-chat-message [message]="content"></app-chat-message>
+    </span>
+</ng-template>
+
+<ng-template #color let-content="content" let-value="value">
+    <span class="color-template" [style.color]="value">
+        <app-chat-message [message]="content"></app-chat-message>
+    </span>
+</ng-template>
+
+<ng-template #unknown let-content="content">
+    <span class="unknown-template">
+        <app-chat-message [message]="content"></app-chat-message>
+    </span>
+</ng-template>
+
+<ng-container *ngFor="let part of messageData">
+    {{ part.before }}
+
+    <ng-container *ngIf="part.template">
+        <ng-container *ngTemplateOutlet="part.template;context:part"></ng-container>
+    </ng-container>
+</ng-container>
+

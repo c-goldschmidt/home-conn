@@ -1,0 +1,28 @@
+@import '~@angular/material/theming';
+@import './themes/main-theme';
+@import './themes/mixins';
+
+
+@media not print {
+    // Theme Init
+    @include angular-material-theme($mainTheme);
+    @include component-theming($mainTheme);
+
+    .theme-alternate {
+        @include angular-material-theme($altTheme);
+        @include component-theming($altTheme);
+    }
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+@media print {
+    html, body {
+        font-size: 0.75em;
+    }
+}

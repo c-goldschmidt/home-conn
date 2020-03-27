@@ -1,0 +1,14 @@
+@import '~@angular/material/theming';
+
+@mixin component-theming($theme) {
+    $background: map-get($theme, background);
+    $foreground: map-get($theme, foreground);
+
+    html, body {
+        background-color: mat-color($background, background);
+    }
+
+    .mat-foreground-text {
+        color: mat-color($foreground, text);
+    }
+}

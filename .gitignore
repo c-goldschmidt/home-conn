@@ -1,0 +1,16 @@
+
+
+# IDE config
+.vscode
+.idea
+
+# python cache
+__pycache__
+
+# runtime data
+cache
+server/ssl
+server/*.db
+
+# config (containing secrets)
+server/config.ini

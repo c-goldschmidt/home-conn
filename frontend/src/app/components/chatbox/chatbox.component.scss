@@ -1,0 +1,27 @@
+.scroll-box {
+    height: 400px;
+    border: 1px solid #ccc;
+    width: 100%;
+}
+
+.content-box {
+    display: table;
+    width: 100%;
+}
+
+.chat-row {
+    display: table-row;
+}
+
+.chat-sender {
+    width: 100px;
+}
+
+.chat-sender, .chat-message {
+    display: table-cell;
+    padding: 8px;
+}
+
+.chat-controls {
+    width: 100%;
+}

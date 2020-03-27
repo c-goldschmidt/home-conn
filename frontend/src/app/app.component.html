@@ -1,0 +1,17 @@
+<mat-toolbar>
+    <div class="toolbar-wrap" fxLayout="row" fxLayoutAlign="space-between center">
+        <h1 fxFlex="nogrow">home-conn</h1>
+        <app-user-info fxFlex="nogrow"></app-user-info>
+    </div>
+</mat-toolbar>
+
+<mat-sidenav-container>
+    <!-- <mat-sidenav mode="side" opened>
+        <mat-action-list *ngIf="sideNavItems">
+            <button mat-list-item *ngFor="let item of sideNavItems"(click)="scrollToAnchor(item)">{{ item.title }}</button>
+        </mat-action-list>
+    </mat-sidenav> -->
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>

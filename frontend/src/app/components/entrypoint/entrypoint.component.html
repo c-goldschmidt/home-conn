@@ -1,0 +1,15 @@
+<div class="main" fxLayout="column" fxLayoutAlign="center center">
+    <ng-container *ngIf="loggedIn">
+        <mat-card fxFlex="nogrow">
+            <app-spotify></app-spotify>
+        </mat-card>
+
+        <mat-card fxFlex="nogrow">
+            <app-chatbox></app-chatbox>
+        </mat-card>
+    </ng-container>
+
+    <mat-card class="login" fxFlex="nogrow" *ngIf="!loggedIn">
+        <app-login></app-login>
+    </mat-card>
+</div>
