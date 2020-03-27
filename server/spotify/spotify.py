@@ -8,8 +8,10 @@ _logger = logging.getLogger('SpotifyCMD')
 
 
 def ignore_exception(func):
-    async def wrapper(*args, **kwargs):
+    async def wrapper(instance, *args, **kwargs):
         try:
+            if not instance.auth.auth_token:
+                return None
             await func(*args, **kwargs)
         except spotipy.SpotifyException as e:
             _logger.error(e)
@@ -25,8 +27,10 @@ class SpotifyCMD(BaseCmd):
         self.auth = SpotifyAuth(context_manager)
 
         self.sp = spotipy.Spotify(oauth_manager=self.auth.sp_oauth)
-        self.current_status = self.sp.current_playback()
+        if self.auth.auth_token:
+            self.current_status = self.sp.current_playback()
 
+    @ignore_exception
     async def update_playing_state(self):
         self.current_status = self.sp.current_playback()
 
