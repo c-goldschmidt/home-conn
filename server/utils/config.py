@@ -16,7 +16,7 @@ class Config(SSLMixin, configparser.ConfigParser):
         self.spotify = self['spotify']
         self.ports = self['ports']
         self.server = self['server']
-        self.ssl = self['ssl']
+        self.ssl = self['ssl'] if 'ssl' in self else None
 
         self.prod_mode = self.server['prod_mode'].lower() == 'true'
         if self.prod_mode:

@@ -32,13 +32,11 @@ class SpotifyAuth:
 
         config = self.context_manager.config
         cache_path = os.path.join(CACHE_PATH, config.spotify['username'])
-        prefix = self.context_manager.config.url_prefix
 
-        callback_url = f'{"https" if config.ssl_enabled else "http"}://{config.server["domain"]}{prefix}/__callback__'
         self.sp_oauth = NoBrowserOAuth(
             config.spotify['client_id'],
             config.spotify['client_secret'],
-            redirect_uri=callback_url,
+            redirect_uri=self._get_callback_url(config),
             username=config.spotify['username'],
             scope='user-modify-playback-state user-read-playback-state user-read-currently-playing',
             cache_path=cache_path,
@@ -46,6 +44,13 @@ class SpotifyAuth:
         )
 
         self.auth_token = self.fetch_token()
+
+    def _get_callback_url(self, config):
+        prefix = self.context_manager.config.url_prefix
+        protocol = "https" if config.ssl_enabled else "http"
+
+        callback_url = f'{protocol}://{config.server["callback_domain"]}{prefix}/__callback__'
+        return callback_url
 
     def token_callback(self, code):
         self.sp_oauth.set_response(code)
