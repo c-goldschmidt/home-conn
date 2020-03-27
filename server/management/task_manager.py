@@ -3,6 +3,7 @@ import importlib
 import inspect
 import logging
 
+from sys import platform
 from server.utils.module import Module
 
 _logger = logging.getLogger('TaskManager')
@@ -13,7 +14,11 @@ class TaskManager(object):
         self.context_manager = context_manager
         self.context_manager.task_manager = self
 
-        self.loop = asyncio.ProactorEventLoop()
+        if platform == "win32":
+            self.loop = asyncio.ProactorEventLoop()
+        else:
+            self.loop = asyncio.SelectorEventLoop()
+
         self.instances = {}
         self.tasks = {}
         self.modules = []
