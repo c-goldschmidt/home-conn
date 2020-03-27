@@ -14,3 +14,11 @@ server/*.db
 
 # config (containing secrets)
 server/config.ini
+
+
+# serverside utils
+*.sh
+.bash_history
+.cache
+.python_history
+.viminfo
