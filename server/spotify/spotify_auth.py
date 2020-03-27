@@ -15,8 +15,9 @@ class SpotifyAuth:
 
         config = self.context_manager.config
         cache_path = os.path.join(CACHE_PATH, config.spotify['username'])
+        prefix = self.context_manager.config.url_prefix
 
-        callback_url = f'{"https" if config.ssl_enabled else "http"}://{config.server["domain"]}/__callback__'
+        callback_url = f'{"https" if config.ssl_enabled else "http"}://{config.server["domain"]}{prefix}__callback__'
         self.sp_oauth = spotipy.SpotifyOAuth(
             config.spotify['client_id'],
             config.spotify['client_secret'],
@@ -38,12 +39,16 @@ class SpotifyAuth:
 
         if not token_info:
             auth_url = self.sp_oauth.get_authorize_url()
+
+            if self.context_manager.config.server.get('no_browser'):
+                _logger.info(f'open {auth_url} in browser for auth...')
+                return None
+
             try:
                 import webbrowser
                 webbrowser.open(auth_url)
-            except:
-                _logger.error(f'open {auth_url} in browser for auth...')
-
+            except ImportError:
+                _logger.info(f'open {auth_url} in browser for auth...')
             return None
         else:
             _logger.info('using cached token')

@@ -22,6 +22,15 @@ class Config(SSLMixin, configparser.ConfigParser):
         if self.prod_mode:
             self.ssl_enabled = self.verify_ssl()
 
+    @property
+    def url_prefix(self):
+        prefix = self.server.get('url_prefix')
+        if not prefix:
+            prefix = ''
+        elif prefix[0] != '/':
+            prefix = f'/{prefix}'
+        return prefix
+
     def verify_ssl(self):
         cert_path = self.ssl.get('base_path')
         if not cert_path:
