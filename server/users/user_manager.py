@@ -104,6 +104,9 @@ class UserManager(BaseCmd):
         _logger.debug(f'{len(self.user_list)} Users loaded')
 
     def create_user(self, name, password):
+        if self.context_manager.config.server.get('allow_account_creation').lower() != 'true':
+            return False
+
         params = {
             'name': name,
             'lc_name': name.lower(),
