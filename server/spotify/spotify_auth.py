@@ -1,5 +1,6 @@
 import logging
 import os
+from time import sleep
 
 import spotipy
 
@@ -9,9 +10,19 @@ _logger = logging.getLogger('SpotifyAuth')
 
 
 class NoBrowserOAuth(spotipy.SpotifyOAuth):
+    __response = None
 
-    def get_auth_response(self):
+    def set_response(self, response):
+        self.__response = response
+
+    def get_authorization_code(self, response=None):
+        if response:
+            return self.parse_response_code(response)
+
         _logger.warning(f'need auth: {self.get_authorize_url()}')
+        while not self.__response:
+            sleep(10)
+        return self.__response
 
 
 class SpotifyAuth:
@@ -37,6 +48,7 @@ class SpotifyAuth:
         self.auth_token = self.fetch_token()
 
     def token_callback(self, code):
+        self.sp_oauth.set_response(code)
         self.auth_token = self.sp_oauth.get_access_token(code, as_dict=False)
         _logger.info('got a new token :)')
 
