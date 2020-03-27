@@ -14,10 +14,7 @@ class SSLMixin:
             config = self.context_manager.config
 
         cert_path, crt_file, key_file = self._get_paths(config)
-        self.__ssl_context = ssl.create_default_context(
-            ssl.Purpose.CLIENT_AUTH,
-            capath=cert_path,
-        )
+        self.__ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         self.__ssl_context.load_cert_chain(crt_file, key_file)
 
         return self.__ssl_context
