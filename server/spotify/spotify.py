@@ -12,7 +12,7 @@ def ignore_exception(func):
         try:
             if not instance.auth.auth_token:
                 return None
-            await func(*args, **kwargs)
+            await func(instance, *args, **kwargs)
         except spotipy.SpotifyException as e:
             _logger.error(e)
 
