@@ -27,6 +27,8 @@ class SpotifyCMD(BaseCmd):
         self.auth = SpotifyAuth(context_manager)
 
         self.sp = spotipy.Spotify(oauth_manager=self.auth.sp_oauth)
+
+        self.current_status = None
         if self.auth.auth_token:
             self.current_status = self.sp.current_playback()
 
