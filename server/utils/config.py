@@ -32,9 +32,13 @@ class Config(SSLMixin, configparser.ConfigParser):
         return prefix
 
     def verify_ssl(self):
+        if not self.ssl:
+            _logger.warning('in prod_mode, using ssl is strongly advised!')
+            return False
+
         cert_path = self.ssl.get('base_path')
         if not cert_path:
-            _logger.warning('in prod_mode, using ssl is strongly advised!')
+            _logger.warning('base_path not set')
             return False
 
         try:
