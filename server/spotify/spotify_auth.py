@@ -8,6 +8,12 @@ from server.utils.constants import CACHE_PATH
 _logger = logging.getLogger('SpotifyAuth')
 
 
+class NoBrowserOAuth(spotipy.SpotifyOAuth):
+
+    def get_auth_response(self):
+        _logger.warning(f'need auth: {self.get_authorize_url()}')
+
+
 class SpotifyAuth:
 
     def __init__(self, context_manager):
@@ -17,15 +23,15 @@ class SpotifyAuth:
         cache_path = os.path.join(CACHE_PATH, config.spotify['username'])
         prefix = self.context_manager.config.url_prefix
 
-        callback_url = f'{"https" if config.ssl_enabled else "http"}://{config.server["domain"]}{prefix}__callback__'
-        self.sp_oauth = spotipy.SpotifyOAuth(
+        callback_url = f'{"https" if config.ssl_enabled else "http"}://{config.server["domain"]}{prefix}/__callback__'
+        self.sp_oauth = NoBrowserOAuth(
             config.spotify['client_id'],
             config.spotify['client_secret'],
             redirect_uri=callback_url,
             username=config.spotify['username'],
             scope='user-modify-playback-state user-read-playback-state user-read-currently-playing',
             cache_path=cache_path,
-            show_dialog=True
+            show_dialog=True,
         )
 
         self.auth_token = self.fetch_token()

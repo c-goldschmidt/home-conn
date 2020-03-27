@@ -22,3 +22,4 @@ server/config.ini
 .cache
 .python_history
 .viminfo
+.local

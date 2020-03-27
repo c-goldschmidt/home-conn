@@ -30,7 +30,7 @@ class SSLMixin:
         if not os.path.isfile(crt_file):
             raise ValueError(f'no such file: {cert_path}')
 
-        if not os.path.isfile(crt_file):
+        if not os.path.isfile(key_file):
             raise ValueError(f'no such file: {key_file}')
 
         return cert_path, crt_file, key_file

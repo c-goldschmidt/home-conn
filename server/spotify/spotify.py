@@ -24,9 +24,7 @@ class SpotifyCMD(BaseCmd):
         super().__init__(context_manager)
         self.auth = SpotifyAuth(context_manager)
 
-        self.sp = spotipy.Spotify(
-            oauth_manager=self.auth.sp_oauth,
-        )
+        self.sp = spotipy.Spotify(oauth_manager=self.auth.sp_oauth)
         self.current_status = self.sp.current_playback()
 
     async def update_playing_state(self):
