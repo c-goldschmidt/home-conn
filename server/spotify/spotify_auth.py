@@ -39,6 +39,8 @@ class SpotifyAuth:
             'user-read-currently-playing',
             'playlist-read-private',
             'playlist-read-collaborative',
+            'playlist-modify-private',
+            'playlist-modify-public',
         ]
 
         self.sp_oauth = NoBrowserOAuth(

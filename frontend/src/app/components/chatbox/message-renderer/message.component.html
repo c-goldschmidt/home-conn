@@ -16,6 +16,12 @@
     </span>
 </ng-template>
 
+<ng-template #uri let-content="content">
+    <span class="uri-template">
+        <app-spotify-uri [uri]="content"></app-spotify-uri>
+    </span>
+</ng-template>
+
 <ng-container *ngFor="let part of messageData">
     {{ part.before }}
 

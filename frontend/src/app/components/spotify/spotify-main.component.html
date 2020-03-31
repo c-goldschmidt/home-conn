@@ -12,11 +12,13 @@
             <div *ngIf="status.item?.album?.images">
                 <app-playback-image [images]="status.item.album.images"></app-playback-image>
             </div>
+
             <div class="overlay" fxLayout="column" fxLayoutAlign="center center" (click)="pauseOrResume()">
                 <mat-icon *ngIf="status.is_playing">pause</mat-icon>
                 <mat-icon *ngIf="!status.is_playing">play_arrow</mat-icon>
             </div>
         </div>
+        <app-playlist-add [track]="status?.item"></app-playlist-add>
     </div>
 
     <div fxFlex="nogrow" class="arrow left">

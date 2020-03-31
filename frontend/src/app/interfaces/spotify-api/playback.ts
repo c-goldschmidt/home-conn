@@ -1,6 +1,6 @@
 import { Device } from './devices';
-import { RepeatState, PlaybackType, ItemType } from './enums';
-import { Track, Album, Artist, PlayableItem } from './items';
+import { RepeatState, ItemType } from './enums';
+import { Track, Album, Artist, Playlist } from './items';
 import { Dictionary } from '../misc';
 
 export interface PlaybackActions {
@@ -14,7 +14,7 @@ export interface PlaybackState {
     shuffle_state: boolean;
     repeat_state: RepeatState;
     timestamp: number;
-    context: null;  // todo
+    context: Playlist | Album | Artist;
     progress_ms: number;
     actions: PlaybackActions;
     is_playing: boolean;

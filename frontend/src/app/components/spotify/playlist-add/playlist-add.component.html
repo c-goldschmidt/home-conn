@@ -1,0 +1,5 @@
+<button *ngIf="track" mat-raised-button color="accent" [disabled]="trackInPlaylist || loading" (click)="addToPlaylist()">
+    <ng-container *ngIf="trackInPlaylist && !loading">In playlist</ng-container>
+    <ng-container *ngIf="!trackInPlaylist && !loading">Add to playlist</ng-container>
+    <ng-container *ngIf="loading">...loading...</ng-container>
+</button>

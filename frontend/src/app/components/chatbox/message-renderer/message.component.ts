@@ -20,6 +20,7 @@ export class MessageComponent implements OnChanges {
 
     @ViewChild('mention', {static: true}) private mention: TemplateRef<any>;
     @ViewChild('color', {static: true}) private color: TemplateRef<any>;
+    @ViewChild('uri', {static: true}) private uri: TemplateRef<any>;
     @ViewChild('unknown', {static: true}) private unknown: TemplateRef<any>;
 
     constructor(private cdr: ChangeDetectorRef) { }
@@ -34,14 +35,16 @@ export class MessageComponent implements OnChanges {
     }
 
     private parseMessagePart(message: string): MessagePart[] {
-        const regex = /(?<before>[^\[]*)\[(?<tagName>.+?)=?(?<value>.*?)](?<content>.+?)\[\/\2]/gmi;
+        const regex = /(?<before>[^\[]*)\[(?<tagName>.+?)=?(?<value>.*?)](?<content>.+?)\[\/\2](?<after>.*)/gmi;
         if (!message || !message.match(regex)) {
             return [{before: message || ''}];
         }
 
         let result = regex.exec(message);
+        let contentAfter = '';
         const resultContent = [];
         while (result) {
+            contentAfter = result.groups.after;
             resultContent.push({
                 before: result.groups.before,
                 template: this.getTemplate(result.groups.tagName),
@@ -49,6 +52,10 @@ export class MessageComponent implements OnChanges {
                 content: result.groups.content,
             });
             result = regex.exec(message);
+        }
+
+        if (contentAfter) {
+            resultContent.push({before: contentAfter});
         }
 
         return resultContent;
@@ -60,6 +67,8 @@ export class MessageComponent implements OnChanges {
                 return this.mention;
             case 'color':
                 return this.color;
+            case 'uri':
+                return this.uri;
             default:
                 return this.unknown;
         }

@@ -2,7 +2,15 @@
     <mat-action-list>
         <ng-container *ngFor="let name of ownerNames">
             <h3 matSubheader>Playlists: {{ name }}</h3>
-            <button mat-list-item *ngFor="let item of playlistsByOwnerName.get(name)"(click)="play(item)">{{ item.name }}</button>
+            <button class="icon-hover" mat-list-item *ngFor="let item of playlistsByOwnerName.get(name)"(click)="play(item)" [ngClass]="{active: item.uri === currentContextUri}">
+                <div fxLayout="row" fxLayoutAlign="space-between center" class="item-wrap">
+                    <span fxFlex="nogrow">{{ item.name }}</span>
+                    <span fxFlex="nogrow">
+                        <span class='icon-spacer'></span>
+                        <mat-icon class="icon">play_arrow</mat-icon>
+                    </span>
+                </div>
+            </button>
         </ng-container>
     </mat-action-list>
 </ng-container>

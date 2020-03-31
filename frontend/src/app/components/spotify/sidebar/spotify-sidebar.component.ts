@@ -1,3 +1,4 @@
+import { PlaybackState } from './../../../interfaces/spotify-api/playback';
 import { Playlist, PlayableItem } from './../../../interfaces/spotify-api/items';
 import { UserService } from './../../../services/user.service';
 import { SpotifyService } from './../../../services/spotify.service';
@@ -12,9 +13,8 @@ import { UnsubBase } from 'src/app/utils/unsub-component.baase';
 })
 export class SpotifySidebarComponent extends UnsubBase implements OnInit {
     public loggedIn = false;
-    public privatePlaylists: Playlist[];
-    public publicPlaylists: Playlist[];
 
+    public currentContextUri: string;
     public ownerNames: string[];
     public playlistsByOwnerName = new Map<string, Playlist[]>();
 
@@ -25,6 +25,9 @@ export class SpotifySidebarComponent extends UnsubBase implements OnInit {
 
     ngOnInit() {
         this.loadPlaylists();
+        this.spotify.currentStatus$.pipe(takeUntil(this.unsubscribe$)).subscribe(status => {
+            this.updateCurrentlyPlaying(status);
+        });
     }
 
     private loadPlaylists() {
@@ -46,6 +49,13 @@ export class SpotifySidebarComponent extends UnsubBase implements OnInit {
 
             window.dispatchEvent(new Event('resize'));
         });
+    }
+
+    private updateCurrentlyPlaying(status: PlaybackState) {
+        if (!status || !status.context) {
+            return;
+        }
+        this.currentContextUri = status.context.uri;
     }
 
     play(item: PlayableItem) {

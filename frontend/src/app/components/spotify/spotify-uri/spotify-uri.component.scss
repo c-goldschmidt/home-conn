@@ -1,0 +1,27 @@
+.content-type {
+    color: #aaa;
+}
+
+.content-name {
+    margin-right: 2px;
+    margin-left: 2px;
+}
+
+.icon {
+    height: 12px;
+    width: 12px;
+    overflow: hidden;
+    font-size: 12px;
+}
+
+.icon-spacer {
+    width: 12px;
+}
+
+.icon-hover {
+    cursor: pointer;
+}
+
+:host {
+    display: inline-block;
+}

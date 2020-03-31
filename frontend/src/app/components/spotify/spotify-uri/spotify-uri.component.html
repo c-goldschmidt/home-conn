@@ -1,0 +1,8 @@
+<span *ngIf="uriContent?.type" (click)="play()" class="icon-hover" fxLayout="row" fxLayoutAlign="start center">
+    <span class="content-type">Spotify: </span>
+    <span class="content-name">{{ uriContent.name }}</span>
+    <span class="content-type">({{ uriContent.type }})</span>
+    <span class="icon-spacer"></span>
+    <mat-icon class="icon" *ngIf="isPlayable">play_arrow</mat-icon>
+</span>
+<span *ngIf="!uriContent?.type">Unknown spotify URI</span>

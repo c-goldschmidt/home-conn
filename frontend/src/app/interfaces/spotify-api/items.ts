@@ -45,6 +45,15 @@ export interface SpotifyUser extends BaseItem {
     type: ItemType.USER;
 }
 
+export interface PlaylistTrack extends BaseItem {
+    added_at: string;
+    added_by: SpotifyUser;
+    is_local: boolean;
+    primary_color: null;
+    track: Track;
+    video_thumbnail: Dictionary<string>;
+}
+
 export interface Playlist extends BaseItem {
     collaborative: boolean;
     description: string;
@@ -54,9 +63,11 @@ export interface Playlist extends BaseItem {
     public: boolean;
     type: ItemType.PLAYLIST;
     snapshot_id: string;
+    is_main_playlist: boolean;
     tracks: {
         href: string;
         total: number;
+        items?: PlaylistTrack[];
     };
 }
 

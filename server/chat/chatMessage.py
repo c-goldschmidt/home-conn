@@ -1,6 +1,7 @@
 import re
 
 rx_mention = re.compile(r'@(?P<username>[a-z0-9]+)')
+rx_uri = re.compile(r'[^]]?(?P<uri>spotify:[a-z]+:[a-z0-9]+\b)', re.I)
 
 
 class ChatMessage:
@@ -20,7 +21,10 @@ class ChatMessage:
 
     def parse(self):
         self.sender = self.user_manager.get_user(self.sender_id)
+        self._parse_mentions()
+        self._parse_uris()
 
+    def _parse_mentions(self):
         mention_names = {}
         for result in rx_mention.finditer(self.message):
             name = result.group('username').lower()
@@ -44,6 +48,19 @@ class ChatMessage:
             self.message = self.message.replace(
                 f'@{replace_dict["replace"]}',
                 f'[color=#ccffff][mention={user.id}]@{user.name}[/mention][/color]',
+            )
+
+    def _parse_uris(self):
+        found = []
+        for result in rx_uri.finditer(self.message):
+            uri = result.group('uri')
+            if uri in found:
+                continue
+
+            found.append(uri)
+            self.message = self.message.replace(
+                uri,
+                f'[uri]{uri}[/uri]',
             )
 
     def to_dict(self):

@@ -1,3 +1,5 @@
+import { SpotifyUriComponent } from './components/spotify/spotify-uri/spotify-uri.component';
+import { PlaylistAddComponent } from './components/spotify/playlist-add/playlist-add.component';
 import { LoginComponent } from './components/login/login.component';
 import { EntrypointComponent } from './components/entrypoint/entrypoint.component';
 import { BrowserModule } from '@angular/platform-browser';
@@ -34,6 +36,8 @@ import { SpotifySidebarComponent } from './components/spotify/sidebar/spotify-si
         SpotifyMainComponent,
         PlaybackImageComponent,
         SpotifySidebarComponent,
+        PlaylistAddComponent,
+        SpotifyUriComponent,
     ],
     imports: [
         BrowserModule,
