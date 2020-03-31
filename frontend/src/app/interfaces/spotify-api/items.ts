@@ -54,7 +54,6 @@ export interface Playlist extends BaseItem {
     public: boolean;
     type: ItemType.PLAYLIST;
     snapshot_id: string;
-
     tracks: {
         href: string;
         total: number;

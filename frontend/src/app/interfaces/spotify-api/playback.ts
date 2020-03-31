@@ -18,6 +18,6 @@ export interface PlaybackState {
     progress_ms: number;
     actions: PlaybackActions;
     is_playing: boolean;
-    item: PlayableItem;
+    item: Track;
     currently_playing_type: ItemType;
 }
