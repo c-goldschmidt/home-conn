@@ -1,0 +1,8 @@
+<ng-container *ngIf="loggedIn">
+    <mat-action-list>
+        <ng-container *ngFor="let name of ownerNames">
+            <h3 matSubheader>Playlists: {{ name }}</h3>
+            <button mat-list-item *ngFor="let item of playlistsByOwnerName.get(name)"(click)="play(item)">{{ item.name }}</button>
+        </ng-container>
+    </mat-action-list>
+</ng-container>

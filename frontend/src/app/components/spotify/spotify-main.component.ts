@@ -18,7 +18,7 @@ export class SpotifyMainComponent extends UnsubBase implements OnInit {
 
     ngOnInit() {
         this.spotify.fetchStatus();
-
+        this.spotify.fetchPlaylists();
         this.spotify.currentStatus$.pipe(
             takeUntil(this.unsubscribe$),
         ).subscribe(status => this.status = status);

@@ -6,11 +6,9 @@
 </mat-toolbar>
 
 <mat-sidenav-container>
-    <!-- <mat-sidenav mode="side" opened>
-        <mat-action-list *ngIf="sideNavItems">
-            <button mat-list-item *ngFor="let item of sideNavItems"(click)="scrollToAnchor(item)">{{ item.title }}</button>
-        </mat-action-list>
-    </mat-sidenav> -->
+    <mat-sidenav mode="side" opened>
+        <app-spotify-sidenav></app-spotify-sidenav>
+    </mat-sidenav>
     <mat-sidenav-content>
         <router-outlet></router-outlet>
     </mat-sidenav-content>

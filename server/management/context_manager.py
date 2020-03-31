@@ -49,10 +49,24 @@ class ContextManager:
         if not self._valid(message):
             return
 
+        handler = self._get_handler(message)
+        if handler and self._check_user(sender, handler):
+            await handler.run_cmd(message, sender)
+
         for cmd_class in self.cmd_instances:
             if message['type'] == cmd_class.TYPE:
-                await cmd_class.run_cmd(message, sender)
                 return
+
+    def _get_handler(self, message):
+        for cmd_class in self.cmd_instances:
+            if message['type'] == cmd_class.TYPE:
+                return cmd_class
+        return None
+
+    def _check_user(self, sender, handler):
+        if not handler.requires_login:
+            return True
+        return self.user_manager.identify(sender) is not None
 
     def _valid(self, message):
         if not isinstance(message, dict):

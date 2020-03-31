@@ -33,12 +33,20 @@ class SpotifyAuth:
         config = self.context_manager.config
         cache_path = os.path.join(CACHE_PATH, config.spotify['username'])
 
+        scope = [
+            'user-modify-playback-state',
+            'user-read-playback-state',
+            'user-read-currently-playing',
+            'playlist-read-private',
+            'playlist-read-collaborative',
+        ]
+
         self.sp_oauth = NoBrowserOAuth(
             config.spotify['client_id'],
             config.spotify['client_secret'],
             redirect_uri=config.spotify["callback_url"],
             username=config.spotify['username'],
-            scope='user-modify-playback-state user-read-playback-state user-read-currently-playing',
+            scope=' '.join(scope),
             cache_path=cache_path,
             show_dialog=True,
         )

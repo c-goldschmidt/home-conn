@@ -20,6 +20,7 @@ import { TrustHTMLPipe } from './utils/trusted-html.pipe';
 import { SpotifyMainComponent } from './components/spotify/spotify-main.component';
 import { SpotifyService } from './services/spotify.service';
 import { PlaybackImageComponent } from './components/spotify/playback-image/playback-image.component';
+import { SpotifySidebarComponent } from './components/spotify/sidebar/spotify-sidebar.component';
 
 @NgModule({
     declarations: [
@@ -32,6 +33,7 @@ import { PlaybackImageComponent } from './components/spotify/playback-image/play
         MessageComponent,
         SpotifyMainComponent,
         PlaybackImageComponent,
+        SpotifySidebarComponent,
     ],
     imports: [
         BrowserModule,

@@ -12,8 +12,10 @@ _logger = logging.getLogger('UserManager')
 
 class UserManager(BaseCmd):
     TYPE = 'user'
+    requires_login = False
 
     def __init__(self, context_manager):
+        super().__init__(context_manager)
         self.db = context_manager.database
         self.socket_manager = context_manager.socket_manager
 
@@ -29,6 +31,11 @@ class UserManager(BaseCmd):
     def get_user(self, user_id):
         users = [user for user in self.user_list if user.id == user_id]
         return users[0] if users else None
+
+    @property
+    def has_logged_in(self):
+        users = [user for user in self.user_list if user.socket]
+        return len(users) > 0
 
     async def send_to_all_users(self, message):
         for user in self.user_list:
@@ -104,7 +111,7 @@ class UserManager(BaseCmd):
         _logger.debug(f'{len(self.user_list)} Users loaded')
 
     def create_user(self, name, password):
-        if self.context_manager.config.server.get('allow_account_creation').lower() != 'true':
+        if self.context_manager.config.server.bool('allow_account_creation'):
             return False
 
         params = {

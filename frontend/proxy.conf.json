@@ -1,6 +1,10 @@
 {
-    "/api": {
-      "target": "http://localhost:5000",
-      "secure": false
+    "/ws": {
+        "target": "ws://localhost:8443",
+        "secure": false,
+        "ws": true,
+        "pathRewrite": {
+             "^/ws": ""
+        }
     }
 }

@@ -18,6 +18,8 @@ export enum ItemType {
     ALBUM = 'album',
     TRACK = 'track',
     ARTIST = 'artist',
+    PLAYLIST = 'playlist',
+    USER = 'user',
 }
 
 export enum Precision {

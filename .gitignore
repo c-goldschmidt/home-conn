@@ -23,3 +23,6 @@ server/config.ini
 .python_history
 .viminfo
 .local
+.angular-config.json
+.config
+.npm

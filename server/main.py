@@ -19,8 +19,6 @@ def get_args():
 
 
 def compile_frontend(config):
-    prefix = config.url_prefix
-
     if not os.path.isdir(os.path.join(FE_PATH, 'node_modules')):
         print('installing dependencies')
         subprocess.run(
@@ -32,7 +30,7 @@ def compile_frontend(config):
     if not os.path.isdir(os.path.join(FE_PATH, 'dist')):
         print('compiling frontend')
         subprocess.run(
-            ['npm', 'run', 'build', '--', '--prod', f'--deploy-url={prefix}/static/', f'--base-href={prefix}/',  '--aot'],
+            ['npm', 'run', 'build', '--', '--prod', f'--deploy-url=/static/', f'--base-href=/',  '--aot'],
             shell=True,
             cwd=FE_PATH,
         )

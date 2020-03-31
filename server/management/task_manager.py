@@ -26,7 +26,6 @@ class TaskManager(object):
         asyncio.set_event_loop(self.loop)
 
     def register(self, name):
-
         if name not in self.modules:
             self.import_module(name)
 

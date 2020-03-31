@@ -26,22 +26,19 @@ class WebserverModule(SSLMixin, Module):
         if code:
             self.context_manager.spotify.token_callback(code)
 
-        prefix = self.context_manager.config.url_prefix
-        return web.HTTPFound(location=prefix or '/')
+        return web.HTTPFound(location='/')
 
     async def serve_frontend(self, request):
-        _logger.info(f'serve {request}')
         with open(os.path.join(STATIC_DIR, 'index.html'), 'r') as file:
             return web.Response(text=file.read(), content_type='text/html')
 
     async def start(self):
         _logger.info('initializing...')
 
-        prefix = self.context_manager.config.url_prefix
         self.server = web.Application(logger=app_logger)
-        self.server.router.add_route('get', f'{prefix}/__callback__', self.handle_callback)
-        self.server.router.add_route('get', f'{prefix or "/"}', self.serve_frontend)
-        self.server.router.add_routes([web.static(f'{prefix}/static', STATIC_DIR)])
+        self.server.router.add_route('get', '/__callback__', self.handle_callback)
+        self.server.router.add_route('get', '/', self.serve_frontend)
+        self.server.router.add_routes([web.static(f'/static', STATIC_DIR)])
 
         await web._run_app(
             self.server,

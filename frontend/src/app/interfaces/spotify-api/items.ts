@@ -21,6 +21,7 @@ export interface Album extends BaseItem {
     release_date: string;
     release_date_precision: Precision;
     total_tracks: number;
+    type: ItemType.ALBUM;
 }
 
 export interface Track extends BaseItem {
@@ -36,4 +37,28 @@ export interface Track extends BaseItem {
     is_local: boolean;
     popularity: number;
     preview_url: string;
+    type: ItemType.TRACK;
 }
+
+export interface SpotifyUser extends BaseItem {
+    display_name: string;
+    type: ItemType.USER;
+}
+
+export interface Playlist extends BaseItem {
+    collaborative: boolean;
+    description: string;
+    images: Image[];
+    owner: SpotifyUser;
+    primary_color: any;  // todo
+    public: boolean;
+    type: ItemType.PLAYLIST;
+    snapshot_id: string;
+
+    tracks: {
+        href: string;
+        total: number;
+    };
+}
+
+export type PlayableItem = Playlist | Track | Album | Artist;
