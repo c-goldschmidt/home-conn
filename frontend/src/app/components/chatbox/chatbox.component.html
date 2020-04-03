@@ -1,16 +1,22 @@
 <div class="main" fxLayout="column" fxLayoutAlign="start start">
     <div class="scroll-box">
-        <div class="content-box">
-            <div *ngFor="let message of messages" class="chat-row">
-                <div class="chat-sender">
+        <div class="content-box" fxLayout="column">
+            <div *ngFor="let message of messages" class="chat-row" fxLayout="row" fxFlex="nogrow" fxLayoutAlign="start center">
+                <div class="chat-sender" fxFlex="nogrow">
                     {{ message.sender.name }}
                 </div>
-                <div class="chat-message">
+                <div class="chat-message" fxFlex="auto">
                     <app-chat-message [message]="message.message"></app-chat-message>
                 </div>
-                <div class="chat-actions icon-hover">
-                    <span class="icon-spacer"></span>
-                    <button class="icon" mat-icon-button *ngIf="message.sender.id === user?.id" (click)="deleteMessage(message)"><mat-icon>delete</mat-icon></button>
+                <div class="chat-actions" fxFlex="nogrow">
+                    <ng-container *ngIf="message.sender.id === user?.id">
+                        <mat-icon>keyboard_arrow_left</mat-icon>
+                        <div class="action-overlay" fxLayout="row" fxLayoutAlign="end center">
+                            <button class="icon" mat-icon-button  (click)="deleteMessage(message)">
+                                <mat-icon>delete_forever</mat-icon>
+                            </button>
+                        </div>
+                    </ng-container>
                 </div>
             </div>
         </div>

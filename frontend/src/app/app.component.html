@@ -1,12 +1,19 @@
 <mat-toolbar>
-    <div class="toolbar-wrap" fxLayout="row" fxLayoutAlign="space-between center">
+    <div class="toolbar-wrap" fxLayout="row" fxLayoutAlign="start center">
+        <div fxFlex="nogrow" fxHide.gt-sm>
+            <button mat-icon-button (click)="toggleSidenav()">
+                <mat-icon *ngIf="!sidenav.opened">menu</mat-icon>
+                <mat-icon *ngIf="sidenav.opened">menu_open</mat-icon>
+            </button>
+        </div>
         <h1 fxFlex="nogrow">home-conn</h1>
+        <span fxFlex="auto"><!-- spacer --></span>
         <app-user-info fxFlex="nogrow"></app-user-info>
     </div>
 </mat-toolbar>
 
 <mat-sidenav-container>
-    <mat-sidenav mode="side" opened>
+    <mat-sidenav [mode]="gtSm ? 'side' : 'over'" [opened]="sidenavOpen" #sidenav>
         <app-spotify-sidenav></app-spotify-sidenav>
     </mat-sidenav>
     <mat-sidenav-content>

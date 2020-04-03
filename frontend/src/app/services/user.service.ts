@@ -31,6 +31,7 @@ export class UserService {
         this.loggedIn$.next(false);
         this.loggedInUser$.next(null);
         localStorage.removeItem('__userToken');
+        this.comm.reset();
     }
 
     private fetchUsers() {

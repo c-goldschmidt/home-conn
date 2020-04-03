@@ -1,17 +1,29 @@
 .main {
-    height: 100%;
     width: 100%;
     padding: 24px;
 }
 
 mat-card {
-    max-height: 100%;
     max-width: 100%;
     margin-bottom: 24px;
-    overflow: auto;
     width: 80%;
 
     &.login {
         width: 200px;
+    }
+}
+
+@media screen and (max-width: 960px) {
+    .main {
+        padding: 8px;
+    }
+
+    mat-card {
+        max-width: 100%;
+        width: 100%;
+
+        &.login {
+            width: 100%;
+        }
     }
 }

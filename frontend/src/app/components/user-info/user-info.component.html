@@ -1,5 +1,5 @@
 <div class="wrap" fxLayout="row" *ngIf="user">
-    <span fxFlex="nogrow">{{ user.name }}</span>
+    <span fxFlex="nogrow" fxHide.lt-sm>{{ user.name }}</span>
     <span fxFlex="nogrow">
         <button mat-raised-button color="accent" (click)="logout()">Log out</button>
     </span>

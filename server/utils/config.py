@@ -14,6 +14,10 @@ class ConfigPart(dict):
         default = 'true' if true_if_not_set else 'false'
         return self.get(key, default).lower() == 'true'
 
+    def int(self, key, default):
+        result = self.get(key, default)
+        return int(result)
+
     def __getitem__(self, key):
         return self.get(key, None)
 

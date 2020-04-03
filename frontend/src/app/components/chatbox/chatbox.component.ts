@@ -2,7 +2,7 @@ import { User } from './../../interfaces/commands/user';
 import { ChatMessage } from './../../interfaces/commands/chat';
 import { UserService } from './../../services/user.service';
 import { ChatService } from './../../services/chat.service';
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, ChangeDetectorRef } from '@angular/core';
 import { UnsubBase } from 'src/app/utils/unsub-component.baase';
 import { takeUntil, filter } from 'rxjs/operators';
 

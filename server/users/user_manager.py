@@ -111,7 +111,8 @@ class UserManager(BaseCmd):
         _logger.debug(f'{len(self.user_list)} Users loaded')
 
     def create_user(self, name, password):
-        if self.context_manager.config.server.bool('allow_account_creation'):
+        if not self.context_manager.config.server.bool('allow_account_creation'):
+            _logger.warning('someone tried to signup, but allow_account_creation is disabled')
             return False
 
         params = {

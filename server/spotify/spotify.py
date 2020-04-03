@@ -2,6 +2,7 @@ import logging
 
 import spotipy
 
+from server.spotify.devices import SpotifyDevices
 from server.spotify.spotify_auth import SpotifyAuth
 from server.spotify.spotify_cache import SpotifyCached
 from server.spotify.uri_cache import UriCache
@@ -32,8 +33,9 @@ class SpotifyCMD(BaseCmd):
         self.uri_cache = UriCache(self.sp)
 
         self.current_status = None
-        self.devices = None
+        self.devices = SpotifyDevices()
         self.last_device_id = None
+        self.last_valid_playback = None
 
         self._update_current()
         self._update_devices()
@@ -45,13 +47,20 @@ class SpotifyCMD(BaseCmd):
         self.current_status = self.sp.current_playback()
         if self.current_status:
             device = self.current_status.get('device', {})
+            self.devices.update([device] if device else [])
             self.last_device_id = device.get('id')
+            self.last_valid_playback = self.current_status
+        else:
+            self.current_status = {
+                **self.last_valid_playback,
+                'is_playing': False,
+            } if self.last_valid_playback else None
 
     def _update_devices(self):
         if not self.auth.auth_token:
             return
 
-        self.devices = self.sp.devices()['devices']
+        self.devices.update(self.sp.devices()['devices'])
 
     @ignore_exception
     async def update_playing_state(self):
@@ -71,8 +80,7 @@ class SpotifyCMD(BaseCmd):
             # no one needs to know this right now...
             return
 
-        self.devices = self.sp.devices()['devices']
-
+        self._update_devices()
         for user in self.context_manager.user_manager.user_list:
             if user.socket:
                 await self._send_devices(user.socket)
@@ -113,7 +121,7 @@ class SpotifyCMD(BaseCmd):
     async def _send_devices(self, to_socket):
         await self.context_manager.socket_manager.send_to_socket(to_socket, {
             'type': 'spotify_devices_result',
-            'payload': self.devices,
+            'payload': self.devices.known_devices,
         })
 
     @ignore_exception

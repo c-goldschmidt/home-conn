@@ -34,6 +34,11 @@ export class SocketService {
         this.socket.send(message);
     }
 
+    public reset() {
+        this.disconnect();
+        this.connect();
+    }
+
     private getUrl() {
         const ssl = window.location.protocol.includes('https');
         const protocol = ssl ? 'wss' : 'ws';

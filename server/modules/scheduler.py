@@ -12,7 +12,19 @@ class SchedulerModule(Module):
         super().__init__(*args)
         self.running = False
         self.shutdown_done = False
-        self.last_calls = defaultdict(time.time)
+        self.last_calls = {}
+
+        self.configs = {
+            'status': {
+                'callback': self.fetch_status,
+                'interval': self.context_manager.config.spotify.int('song_update_delay', 15),
+            },
+            'devices': {
+                'callback': self.fetch_devices,
+                'interval': self.context_manager.config.spotify.int('device_update_delay', 30),
+            }
+        }
+        self.config_keys = list(self.configs.keys())
 
     async def fetch_status(self):
         await self.context_manager.spotify.update_playing_state()
@@ -20,20 +32,31 @@ class SchedulerModule(Module):
     async def fetch_devices(self):
         await self.context_manager.spotify.update_devices()
 
-    async def run_loop(self, label, callback, delay):
+    async def run_task(self, label, callback, delay):
+        if label not in self.last_calls:
+            self.last_calls[label] = time.time()
+
         last_call = self.last_calls[label]
         if time.time() - last_call > delay:
             await callback()
             self.last_calls[label] = time.time()
 
+    async def run_tasks(self):
+        coros = []
+        for key, config in self.configs.items():
+            coros.append(self.run_task(key, config['callback'], config['interval']))
+
+        exceptions = await asyncio.gather(*coros, loop=self.loop, return_exceptions=True)
+        for index, ex in enumerate(exceptions):
+            if not ex:
+                continue
+            _logger.error(f'{self.config_keys[index]}: {ex}')
+
     async def start(self):
         self.running = True
 
         while self.running:
-            await asyncio.gather(
-                self.run_loop('status', self.fetch_status, 15),
-                self.run_loop('devices', self.fetch_devices, 30),
-            )
+            await self.run_tasks()
             await asyncio.sleep(1)
         self.shutdown_done = True
 

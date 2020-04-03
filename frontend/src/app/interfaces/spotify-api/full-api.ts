@@ -102,6 +102,9 @@ export interface Device {
     name: string;
     type: string;
     volume_percent: number;
+
+    // custom property
+    is_available: boolean;
 }
 
 export interface Devices {

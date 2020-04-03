@@ -21,6 +21,7 @@ class SocketManager(object):
 
         user = self.identify(socket)
         if user:
+            _logger.debug(f'user {user.name} logged out')
             user.socket = None
 
         self.sockets.remove(socket)
