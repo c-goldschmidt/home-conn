@@ -3,6 +3,7 @@ import logging
 import spotipy
 
 from server.spotify.spotify_auth import SpotifyAuth
+from server.spotify.spotify_cache import SpotifyCached
 from server.spotify.uri_cache import UriCache
 from server.utils.base_cmd import BaseCmd
 _logger = logging.getLogger('SpotifyCMD')
@@ -27,12 +28,15 @@ class SpotifyCMD(BaseCmd):
         super().__init__(context_manager)
         self.auth = SpotifyAuth(context_manager)
 
-        self.sp = spotipy.Spotify(oauth_manager=self.auth.sp_oauth)
+        self.sp = SpotifyCached(oauth_manager=self.auth.sp_oauth)
         self.uri_cache = UriCache(self.sp)
 
         self.current_status = None
+        self.devices = None
         self.last_device_id = None
+
         self._update_current()
+        self._update_devices()
 
     def _update_current(self):
         if not self.auth.auth_token:
@@ -43,9 +47,15 @@ class SpotifyCMD(BaseCmd):
             device = self.current_status.get('device', {})
             self.last_device_id = device.get('id')
 
+    def _update_devices(self):
+        if not self.auth.auth_token:
+            return
+
+        self.devices = self.sp.devices()['devices']
+
     @ignore_exception
     async def update_playing_state(self):
-        if not self.context_manager.user_manager:
+        if not self.context_manager.user_manager.has_logged_in:
             # no one needs to know this right now...
             return
 
@@ -54,6 +64,18 @@ class SpotifyCMD(BaseCmd):
         for user in self.context_manager.user_manager.user_list:
             if user.socket:
                 await self._send_status(user.socket)
+
+    @ignore_exception
+    async def update_devices(self):
+        if not self.context_manager.user_manager.has_logged_in:
+            # no one needs to know this right now...
+            return
+
+        self.devices = self.sp.devices()['devices']
+
+        for user in self.context_manager.user_manager.user_list:
+            if user.socket:
+                await self._send_devices(user.socket)
 
     def token_callback(self, code):
         self.auth.token_callback(code)
@@ -72,18 +94,26 @@ class SpotifyCMD(BaseCmd):
         if message['cmd'] == 'fetch_playlists':
             await self._fetch_playlists(sender)
         if message['cmd'] == 'fetch_devices':
-            await self._fetch_devices(sender)
+            await self._send_devices(sender)
         if message['cmd'] == 'play':
             await self._play(message['payload'])
         if message['cmd'] == 'add_to_playlist':
             await self._add_to_playlist(message['payload'])
         if message['cmd'] == 'resolve_uri':
             await self._resolve_uri(message['payload'], sender)
+        if message['cmd'] == 'switch_device':
+            await self._switch_to_device(message['payload'])
 
     async def _send_status(self, to_socket):
         await self.context_manager.socket_manager.send_to_socket(to_socket, {
             'type': 'spotify_status_change',
             'payload': self.current_status,
+        })
+
+    async def _send_devices(self, to_socket):
+        await self.context_manager.socket_manager.send_to_socket(to_socket, {
+            'type': 'spotify_devices_result',
+            'payload': self.devices,
         })
 
     @ignore_exception
@@ -95,7 +125,7 @@ class SpotifyCMD(BaseCmd):
 
     @ignore_exception
     async def _next(self):
-        self.sp.next_track()
+        print(self.sp.next_track())
         await self.update_playing_state()
 
     @ignore_exception
@@ -134,12 +164,10 @@ class SpotifyCMD(BaseCmd):
         playlist['tracks'] = tracks
 
     @ignore_exception
-    async def _fetch_devices(self, sender):
-        devices = self.sp.devices()
-        await self.context_manager.socket_manager.send_to_socket(sender, {
-            'type': 'spotify_devices_result',
-            'payload': devices,
-        })
+    async def _switch_to_device(self, payload):
+        self.sp.transfer_playback(payload['id'], True)
+        await self.update_devices()
+        await self.update_playing_state()
 
     @ignore_exception
     async def _add_to_playlist(self, payload):
@@ -149,7 +177,9 @@ class SpotifyCMD(BaseCmd):
             self.context_manager.config.spotify['playlist_id'],
             [payload['id']]
         )
+
         updated_playlist = self.sp.playlist(self.context_manager.config.spotify['playlist_id'])
+        self.uri_cache.invalidate(updated_playlist['uri'])
         await self._check_main_playlist(updated_playlist)
 
         for user in self.context_manager.user_manager.user_list:

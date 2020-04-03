@@ -1,13 +1,16 @@
 <div class="main" fxLayout="column" fxLayoutAlign="start start">
-    <h2 fxFlex="nogrow">Chat</h2>
     <div class="scroll-box">
         <div class="content-box">
             <div *ngFor="let message of messages" class="chat-row">
                 <div class="chat-sender">
-                    {{ message.sender_name }}
+                    {{ message.sender.name }}
                 </div>
                 <div class="chat-message">
                     <app-chat-message [message]="message.message"></app-chat-message>
+                </div>
+                <div class="chat-actions icon-hover">
+                    <span class="icon-spacer"></span>
+                    <button class="icon" mat-icon-button *ngIf="message.sender.id === user?.id" (click)="deleteMessage(message)"><mat-icon>delete</mat-icon></button>
                 </div>
             </div>
         </div>

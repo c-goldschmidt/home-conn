@@ -1,7 +1,10 @@
 import logging
 import os
+import _locale
 
 from server.utils.constants import LOG_LEVEL, RESET_SEQ, BOLD_SEQ, COLORS, COLOR_SEQ, GREEN
+
+_locale._getdefaultlocale = (lambda *args: ['en_US', 'utf8'])
 
 
 def formatter_message(message, use_color=True):

@@ -4,7 +4,7 @@ import { SpotifyService } from './../../../services/spotify.service';
 import { Component, Input, OnChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { UnsubBase } from 'src/app/utils/unsub-component.baase';
 import { Subscription } from 'rxjs';
-import { PlayableItem } from 'src/app/interfaces/spotify-api/items';
+import { PlayableItem } from 'src/app/interfaces/spotify-api/adaptions';
 
 interface UriContent {
     type: ItemType;

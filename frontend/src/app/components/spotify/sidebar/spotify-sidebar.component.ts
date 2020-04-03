@@ -1,10 +1,10 @@
-import { PlaybackState } from './../../../interfaces/spotify-api/playback';
-import { Playlist, PlayableItem } from './../../../interfaces/spotify-api/items';
 import { UserService } from './../../../services/user.service';
 import { SpotifyService } from './../../../services/spotify.service';
 import { Component, OnInit } from '@angular/core';
 import { takeUntil, filter, switchMap, tap } from 'rxjs/operators';
 import { UnsubBase } from 'src/app/utils/unsub-component.baase';
+import { Playlist, CurrentlyPlaying } from 'src/app/interfaces/spotify-api/full-api';
+import { PlayableItem } from 'src/app/interfaces/spotify-api/adaptions';
 
 @Component({
     selector: 'app-spotify-sidenav',
@@ -31,10 +31,10 @@ export class SpotifySidebarComponent extends UnsubBase implements OnInit {
     }
 
     private loadPlaylists() {
-        this.spotify.fetchPlaylists();
         this.user.loggedIn$.pipe(
             tap(loggedIn => this.loggedIn = loggedIn),
             filter(loggedIn => loggedIn),
+            tap(() => this.spotify.fetchPlaylists()),
             switchMap(() => this.spotify.playlists$),
             takeUntil(this.unsubscribe$),
         ).subscribe(playlists => {
@@ -51,7 +51,7 @@ export class SpotifySidebarComponent extends UnsubBase implements OnInit {
         });
     }
 
-    private updateCurrentlyPlaying(status: PlaybackState) {
+    private updateCurrentlyPlaying(status: CurrentlyPlaying) {
         if (!status || !status.context) {
             return;
         }

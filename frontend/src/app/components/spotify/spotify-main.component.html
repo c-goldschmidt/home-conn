@@ -1,16 +1,23 @@
-<h2>Spotify</h2>
-
 <div class="wrapper" fxLayout="row" fxLayoutAlign="space-between center">
     <div fxFlex="nogrow" class="arrow left">
         <button mat-icon-button (click)="prev()"><mat-icon>skip_previous</mat-icon></button>
     </div>
 
     <div fxFlex="nogrow" class="center" fxLayout="column" fxLayoutAlign="start center">
-        <h3 fxFlex="nogrow">{{ status?.item?.name || 'not playing...' }}</h3>
+        <h3 fxFlex="nogrow">
+            <ng-container *ngIf="status?.item">
+                <span class="track-name">{{ status.item.name }}</span>
+                <span class="artist-name">({{ artistString }})</span>
+            </ng-container>
+
+            <ng-container *ngIf="!status?.item">
+                Not playing...
+            </ng-container>
+        </h3>
 
         <div class="playback-wrap" fxFlex="nogorw" *ngIf="status">
-            <div *ngIf="status.item?.album?.images">
-                <app-playback-image [images]="status.item.album.images"></app-playback-image>
+            <div *ngIf="images">
+                <app-playback-image [images]="images"></app-playback-image>
             </div>
 
             <div class="overlay" fxLayout="column" fxLayoutAlign="center center" (click)="pauseOrResume()">
@@ -18,7 +25,14 @@
                 <mat-icon *ngIf="!status.is_playing">play_arrow</mat-icon>
             </div>
         </div>
+
         <app-playlist-add [track]="status?.item"></app-playlist-add>
+        <mat-chip-list>
+            <mat-chip *ngFor="let device of devices"
+                      (click)="switchToDevice(device)"
+                      [selected]="device.is_active">{{ device.name }}</mat-chip>
+        </mat-chip-list>
+
     </div>
 
     <div fxFlex="nogrow" class="arrow left">

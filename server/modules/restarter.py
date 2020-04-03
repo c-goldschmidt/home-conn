@@ -1,6 +1,8 @@
 import asyncio
 import logging
 
+from modulefinder import ModuleFinder
+
 from server.utils.constants import SERVER_PATH
 from server.utils.module import Module
 
@@ -17,8 +19,15 @@ class EventHandler(FileSystemEventHandler):
         self.queue = queue
 
     def on_modified(self, event):
-        _logger.debug(event)
-        self.queue.append('all')
+        if not event.src_path.endswith('.py'):
+            return
+
+        print(f'modules using {event.src_path}')
+        finder = ModuleFinder()
+        finder.load_file(event.src_path)
+        for name, mod in finder.modules.items():
+            print(name)
+            print(mod)
 
 
 class WatchdogModule(Module):
@@ -32,15 +41,11 @@ class WatchdogModule(Module):
         self.restart_queue = []
 
     async def restart_modules(self):
-        _logger.info('changes detected, restarting services')
         for module in self.task_manager.modules:
             if module in self.KEEP_RUNNING:
                 continue
 
             await self.task_manager.reimport_module(module)
-
-        _logger.info('services restarted, reloading context')
-        self.context_manager.reload()
 
     async def check_queue(self):
         if self.restart_queue:

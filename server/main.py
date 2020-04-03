@@ -46,7 +46,7 @@ if __name__ == '__main__':
         compile_frontend(config)
     else:
         manager.register('frontend')
-        manager.register('restarter')
+        # manager.register('restarter') todo: unstable, rebuild...
 
     manager.register('websocket')
     manager.register('webserver')

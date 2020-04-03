@@ -1,4 +1,3 @@
-import { ChatMessage } from './../../../interfaces/commands/chat';
 import { Input, Component, ChangeDetectionStrategy, OnChanges, ChangeDetectorRef, TemplateRef, ViewChild } from '@angular/core';
 
 interface MessagePart {

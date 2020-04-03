@@ -15,22 +15,6 @@ class ContextManager:
 
     def __init__(self, config):
         self.config = config
-        self.database = None
-        self.task_manager = None
-        self.socket_manager = None
-        self.user_manager = None
-        self.spotify = None
-        self.chat = None
-        self.cmd_instances = []
-        self.first_load = True
-
-        self.reload()
-
-    def reload(self):
-        if not self.first_load:
-            importlib.reload(server)
-            _logger.info('modules reloaded')
-
         self.database = Database()
         self.task_manager = None
         self.socket_manager = SocketManager(self)
@@ -43,7 +27,6 @@ class ContextManager:
             self.chat,
             self.user_manager,
         ]
-        self.first_load = False
 
     async def run_cmd(self, message, sender):
         if not self._valid(message):

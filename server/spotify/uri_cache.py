@@ -1,12 +1,23 @@
+import json
 import logging
+import os
+import time
+
+from server.utils.cache_mixin import CacheMixin
+from server.utils.constants import CACHE_PATH
 
 _logger = logging.getLogger('UriCache')
 
 
-class UriCache:
+class UriCache(CacheMixin):
     def __init__(self, spotify):
         self.entries = {}
         self.sp = spotify
+
+        self.timeout = 24 * 60 * 60
+        self.cache_file = os.path.join(CACHE_PATH, '_uri_cache')
+        self._load()
+        self._logger = logging.getLogger('UriCache')
 
     @staticmethod
     def get_type(uri):
@@ -15,13 +26,7 @@ class UriCache:
             return uri.split(':')[1]
         return None
 
-    def get(self, uri):
-        if uri not in self.entries:
-            _logger.info(f'cache miss: {uri}')
-            self.entries[uri] = self.fetch(uri)
-        return self.entries[uri]
-
-    def fetch(self, uri):
+    def cache_miss(self, uri):
         uri_type = self.get_type(uri)
 
         if uri_type == 'playlist':

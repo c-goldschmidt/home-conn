@@ -1,6 +1,6 @@
 import re
 
-rx_mention = re.compile(r'@(?P<username>[a-z0-9]+)')
+rx_mention = re.compile(r'@(?P<username>[a-z0-9]+)', re.I)
 rx_uri = re.compile(r'[^]]?(?P<uri>spotify:[a-z]+:[a-z0-9]+\b)', re.I)
 
 
@@ -65,8 +65,9 @@ class ChatMessage:
 
     def to_dict(self):
         return {
+            'id': self.id,
             'message': self.message,
-            'sender_name': self.sender.name,
+            'sender': self.sender.to_public_dict(),
             'timestamp': self.timestamp,
             'mentions': [user.to_public_dict() for user in self.mentions],
         }

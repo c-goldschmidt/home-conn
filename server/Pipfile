@@ -9,6 +9,7 @@ verify_ssl = true
 itsdangerous = "*"
 aiohttp = "*"
 watchdog = "*"
+cachecontrol = "*"
 
 [requires]
 python_version = "3.8"

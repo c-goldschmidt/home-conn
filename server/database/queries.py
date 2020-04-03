@@ -56,3 +56,8 @@ SQL_CREATE_MESSAGE = '''
     INSERT INTO chat_message (sender_id, message)
     VALUES (:sender_id, :message);
 '''
+
+SQL_DELETE_MESSAGE = '''
+    DELETE FROM chat_message
+    WHERE id = :message_id and sender_id = :sender_id;
+'''

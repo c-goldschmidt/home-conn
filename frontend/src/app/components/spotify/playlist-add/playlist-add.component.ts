@@ -1,8 +1,8 @@
-import { Playlist, Track } from './../../../interfaces/spotify-api/items';
 import { SpotifyService } from './../../../services/spotify.service';
 import { Component, OnInit, ChangeDetectionStrategy, OnChanges, Input, ChangeDetectorRef } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { UnsubBase } from 'src/app/utils/unsub-component.baase';
+import { Playlist, Track } from 'src/app/interfaces/spotify-api/full-api';
 
 @Component({
     selector: 'app-playlist-add',

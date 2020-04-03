@@ -4,6 +4,9 @@
 .vscode
 .idea
 
+# local testing stuff
+_spotifyapi_objects
+
 # python cache
 __pycache__
 

@@ -1,5 +1,8 @@
+import { User } from './../../interfaces/commands/user';
+import { ChatMessage } from './../../interfaces/commands/chat';
+import { UserService } from './../../services/user.service';
 import { ChatService } from './../../services/chat.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { UnsubBase } from 'src/app/utils/unsub-component.baase';
 import { takeUntil, filter } from 'rxjs/operators';
 
@@ -10,13 +13,22 @@ import { takeUntil, filter } from 'rxjs/operators';
 })
 export class ChatBoxComponent extends UnsubBase implements OnInit {
     public loading = true;
-    public messages = [];
+    public messages: ChatMessage[] = [];
     public message = '';
+    public user: User;
+
+    private notificationsEnabled = false;
+    private currentNote: Notification;
 
     constructor(
         private chatService: ChatService,
+        private userService: UserService,
     ) {
         super();
+
+        Notification.requestPermission().then((result) => {
+            this.notificationsEnabled = result === 'granted';
+        });
     }
 
     public send() {
@@ -24,8 +36,16 @@ export class ChatBoxComponent extends UnsubBase implements OnInit {
         this.message = '';
     }
 
+    public deleteMessage(message: ChatMessage) {
+        this.chatService.deleteMessage(message);
+    }
+
     ngOnInit() {
         this.loading = true;
+        this.userService.loggedInUser$.pipe(takeUntil(this.unsubscribe$)).subscribe(user => {
+            this.user = user;
+        });
+
         this.chatService.allMessages$.pipe(
             takeUntil(this.unsubscribe$),
             filter(messages => !!messages),
@@ -33,6 +53,21 @@ export class ChatBoxComponent extends UnsubBase implements OnInit {
             this.messages = messages;
             this.loading = false;
         });
+
+        this.chatService.newMessage$.pipe(takeUntil(this.unsubscribe$)).subscribe(message => {
+            this.checkNotification(message);
+        });
         this.chatService.requestLog(100);
+    }
+
+    private checkNotification(message: ChatMessage) {
+        if (!this.user || !this.notificationsEnabled) {
+            return;
+        }
+
+        if (message.mentions.find(user => user.id === this.user.id)) {
+            const text = message.message.replace(/\[.+?]/g, '');
+            this.currentNote = new Notification('New message', { body: text});
+        }
     }
 }
