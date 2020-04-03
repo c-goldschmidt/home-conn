@@ -8,13 +8,19 @@
     left: 0;
     right: 0;
     bottom: 0;
-    cursor: pointer;
     display: none !important;
+    cursor: pointer;
+
+    > mat-icon {
+        background-color: rgba(0, 0, 0, 0.75);
+        padding: 8px;
+        border-radius: 100%;
+    }
 }
 
 .playback-wrap:hover .overlay {
     display: flex !important;
-    background-color: rgba(0, 0, 0, 0.75);
+
 }
 
 .artist-name {
