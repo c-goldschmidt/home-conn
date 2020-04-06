@@ -15,10 +15,26 @@ def ignore_exception(func):
         try:
             if not instance.auth.auth_token:
                 return None
-            await func(instance, *args, **kwargs)
+            return await func(instance, *args, **kwargs)
         except spotipy.SpotifyException as e:
             _logger.error(e)
 
+    return wrapper
+
+
+def if_token_async(func):
+    async def wrapper(instance, *args, **kwargs):
+        if instance.auth.auth_token:
+            return await func(instance, *args, **kwargs)
+        return None
+    return wrapper
+
+
+def if_token_sync(func):
+    def wrapper(instance, *args, **kwargs):
+        if instance.auth.auth_token:
+            return func(instance, *args, **kwargs)
+        return None
     return wrapper
 
 
@@ -40,10 +56,8 @@ class SpotifyCMD(BaseCmd):
         self._update_current()
         self._update_devices()
 
+    @if_token_sync
     def _update_current(self):
-        if not self.auth.auth_token:
-            return
-
         self.current_status = self.sp.current_playback()
         if self.current_status:
             device = self.current_status.get('device', {})
@@ -56,13 +70,22 @@ class SpotifyCMD(BaseCmd):
                 'is_playing': False,
             } if self.last_valid_playback else None
 
-    def _update_devices(self):
-        if not self.auth.auth_token:
+    async def check_auth_required(self, socket):
+        if self.auth.auth_token:
             return
 
+        url = self.auth.sp_oauth.get_authorize_url()
+        await self.context_manager.socket_manager.send_to_socket(socket, {
+            'type': 'spotify_auth_required',
+            'payload': url,
+        })
+
+    @if_token_sync
+    def _update_devices(self):
         self.devices.update(self.sp.devices()['devices'])
 
     @ignore_exception
+    @if_token_async
     async def update_playing_state(self):
         if not self.context_manager.user_manager.has_logged_in:
             # no one needs to know this right now...
@@ -75,6 +98,7 @@ class SpotifyCMD(BaseCmd):
                 await self._send_status(user.socket)
 
     @ignore_exception
+    @if_token_async
     async def update_devices(self):
         if not self.context_manager.user_manager.has_logged_in:
             # no one needs to know this right now...
@@ -85,9 +109,17 @@ class SpotifyCMD(BaseCmd):
             if user.socket:
                 await self._send_devices(user.socket)
 
-    def token_callback(self, code):
+    async def token_callback(self, code):
         self.auth.token_callback(code)
 
+        admin = self.context_manager.user_manager.get_admin()
+        if self.auth.auth_token and admin and admin.socket:
+            await self.context_manager.socket_manager.send_to_socket(admin.socket, {
+                'type': 'spotify_auth_required',
+                'payload': None,
+            })
+
+    @if_token_async
     async def run_cmd(self, message, sender):
         if message['cmd'] == 'fetch_status':
             await self._send_status(sender)

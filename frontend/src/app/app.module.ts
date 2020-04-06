@@ -54,7 +54,7 @@ import { SpotifySidebarComponent } from './components/spotify/sidebar/spotify-si
         UserService,
         SpotifyService,
     ],
-    entryComponents: [],
+    entryComponents: [ ],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

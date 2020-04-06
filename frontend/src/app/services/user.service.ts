@@ -11,12 +11,14 @@ export class UserService {
     public loggedIn$ = new BehaviorSubject<boolean>(false);
     public loggedInUser$ = new BehaviorSubject<User>(null);
     public loginError$ = new BehaviorSubject<string>(null);
+    public needAuth$ = new BehaviorSubject<string>(null);
 
     public otherUsers$ = new BehaviorSubject<OtherUser[]>([]);
 
     constructor(private comm: SocketService) {
         this.comm.registerCallback<LoginResult>('login_result', message => this.handleLoginResult(message));
         this.comm.registerCallback<OtherUser[]>('user_result', message => this.handleUserResult(message));
+        this.comm.registerCallback<string>('spotify_auth_required', message => this.handleAuthRequired(message));
     }
 
     public login(username: string, password: string) {
@@ -55,5 +57,9 @@ export class UserService {
         } else {
             this.loginError$.next(message.message);
         }
+    }
+
+    private handleAuthRequired(url: string) {
+        this.needAuth$.next(url);
     }
 }

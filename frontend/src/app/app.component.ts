@@ -13,7 +13,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
     private unsubscribe$ = new Subject<void>();
 
-    constructor(private socket: SocketService, private cdr: ChangeDetectorRef) { }
+    constructor(
+        private socket: SocketService,
+        private cdr: ChangeDetectorRef
+    ) { }
 
     @HostListener('window:resize')
     public resize() {

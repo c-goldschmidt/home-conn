@@ -32,6 +32,14 @@ class UserManager(BaseCmd):
         users = [user for user in self.user_list if user.id == user_id]
         return users[0] if users else None
 
+    def get_admin(self):
+        lc_name = self.context_manager.config.server.get('admin_lc_name')
+        users = [user for user in self.user_list if user.lc_name == lc_name]
+        return users[0] if users else None
+
+    def is_admin(self, user):
+        return user.lc_name == self.context_manager.config.server.get('admin_lc_name')
+
     @property
     def has_logged_in(self):
         users = [user for user in self.user_list if user.socket]
@@ -70,7 +78,12 @@ class UserManager(BaseCmd):
         if logged_in:
             _logger.info(f'user {logged_in.name} logged in')
             logged_in.socket = sender
-            return await self._respond_login(sender, True, logged_in)
+            await self._respond_login(sender, True, logged_in)
+
+            if self.is_admin(logged_in):
+                await self.context_manager.spotify.check_auth_required(sender)
+
+            return
         elif retry and 'token' not in message['payload'] and self.create_user(
             message['payload']['username'],
             message['payload']['password']

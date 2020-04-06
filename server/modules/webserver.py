@@ -24,9 +24,14 @@ class WebserverModule(SSLMixin, Module):
         code = request.query.get('code')
 
         if code:
-            self.context_manager.spotify.token_callback(code)
+            await self.context_manager.spotify.token_callback(code)
 
-        return web.HTTPFound(location='/')
+        return web.Response(text=f'''<!doctype html>
+        <html lang="en">
+            <body>You can close this window now.</body>
+            <script>window.close()</script>
+        </html>
+        ''', content_type='text/html')
 
     async def serve_frontend(self, request):
         with open(os.path.join(STATIC_DIR, 'index.html'), 'r') as file:
