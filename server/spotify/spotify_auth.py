@@ -10,19 +10,11 @@ _logger = logging.getLogger('SpotifyAuth')
 
 
 class NoBrowserOAuth(spotipy.SpotifyOAuth):
-    __response = None
-
-    def set_response(self, response):
-        self.__response = response
-
     def get_authorization_code(self, response=None):
         if response:
             return self.parse_response_code(response)
 
-        _logger.warning(f'need auth: {self.get_authorize_url()}')
-        while not self.__response:
-            sleep(10)
-        return self.__response
+        raise NotImplementedError()
 
 
 class SpotifyAuth:
@@ -31,7 +23,7 @@ class SpotifyAuth:
         self.context_manager = context_manager
 
         config = self.context_manager.config
-        cache_path = os.path.join(CACHE_PATH, config.spotify['username'])
+        cache_path = os.path.join(CACHE_PATH, '_spotify_token')
 
         scope = [
             'user-modify-playback-state',
@@ -46,8 +38,7 @@ class SpotifyAuth:
         self.sp_oauth = NoBrowserOAuth(
             config.spotify['client_id'],
             config.spotify['client_secret'],
-            redirect_uri=config.spotify["callback_url"],
-            username=config.spotify['username'],
+            redirect_uri=config.spotify['callback_url'],
             scope=' '.join(scope),
             cache_path=cache_path,
             show_dialog=True,
@@ -56,7 +47,6 @@ class SpotifyAuth:
         self.auth_token = self.fetch_token()
 
     def token_callback(self, code):
-        self.sp_oauth.set_response(code)
         self.auth_token = self.sp_oauth.get_access_token(code, as_dict=False)
         _logger.info('got a new token :)')
 
