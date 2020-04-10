@@ -29,3 +29,7 @@ server/config.ini
 .angular-config.json
 .config
 .npm
+
+persist
+Dockerfile
+docker-compose.yml

@@ -98,6 +98,10 @@ class ChatCMD(BaseCmd):
         result = self.db.execute_fetch_one(
             SQL_SELECT_MESSAGE, {'id': message_id}
         )
+
+        if not result:
+            self.fetch()
+
         return not result
 
     def fetch(self):

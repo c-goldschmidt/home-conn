@@ -43,7 +43,9 @@ if __name__ == '__main__':
 
     if config.prod_mode:
         _logger.info('PROD mode active')
-        compile_frontend(config)
+
+        if config.server.bool('compile_fronted', False):
+            compile_frontend(config)
     else:
         manager.register('frontend')
         # manager.register('restarter') todo: unstable, rebuild...
