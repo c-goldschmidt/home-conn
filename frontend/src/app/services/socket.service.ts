@@ -42,7 +42,8 @@ export class SocketService {
     private getUrl() {
         const ssl = window.location.protocol.includes('https');
         const protocol = ssl ? 'wss' : 'ws';
-        return  `${protocol}://${window.location.hostname}/${protocol}`;
+        const port = window.location.port ? `:${window.location.port}` : '';
+        return  `${protocol}://${window.location.hostname}${port}/${protocol}`;
     }
 
     connect(initialMessage: string = null) {

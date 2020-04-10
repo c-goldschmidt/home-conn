@@ -14,12 +14,21 @@ class ConfigPart(dict):
         default = 'true' if true_if_not_set else 'false'
         return self.get(key, default).lower() == 'true'
 
-    def int(self, key, default):
+    def int(self, key, default=None):
         result = self.get(key, default)
+        if not result:
+            raise ValueError(f'missing configuration: "{key}"')
         return int(result)
 
     def __getitem__(self, key):
         return self.get(key, None)
+
+
+class ServerConfig(ConfigPart):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self['port'] = self.get('port', 8080)
+        self['dev_port'] = self.get('dev_port', 8090)
 
 
 class Config(SSLMixin, configparser.ConfigParser):
@@ -30,8 +39,7 @@ class Config(SSLMixin, configparser.ConfigParser):
         self._load()
 
         self.spotify = ConfigPart(self['spotify'])
-        self.ports = ConfigPart(self['ports'])
-        self.server = ConfigPart(self['server'])
+        self.server = ServerConfig(self['server'])
         self.ssl = ConfigPart(self['ssl'] if 'ssl' in self else {})
 
         self.prod_mode = self.server.bool('prod_mode')

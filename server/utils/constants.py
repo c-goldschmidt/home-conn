@@ -1,11 +1,6 @@
 import logging
 import os
 
-# ports
-WS_PORT = 8666
-FE_PORT = 80  # use HTTP port for frontend
-WEBSERVER_PORT = 8090
-
 # paths
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 FE_PATH = os.path.join(BASE_PATH, 'frontend')

@@ -1,7 +1,7 @@
 import asyncio
 import logging
 
-from server.utils.constants import FE_PATH, FE_PORT
+from server.utils.constants import FE_PATH
 from server.utils.module import Module
 from server.utils.utils import get_ip
 
@@ -13,9 +13,9 @@ class FrontendModule(Module):
     def __init__(self, *args):
         super().__init__(*args)
         self.process = None
+        self.port = self.context_manager.config.server.int('dev_port')
 
-    @staticmethod
-    async def _read_stream(stream):
+    async def _read_stream(self, stream):
         while True:
             try:
                 line = await stream.readline()
@@ -27,7 +27,7 @@ class FrontendModule(Module):
             _logger.debug(data)
             if data:
                 if 'Compiled successfully' in data:
-                    _logger.info(f'started frontend server on {get_ip()}:{FE_PORT}')
+                    _logger.info(f'started frontend server on {get_ip()}:{self.port}')
                 if 'Compiling...' in data:
                     _logger.info('frontend recompiling')
                 if 'ERR' in data:
@@ -36,7 +36,7 @@ class FrontendModule(Module):
                 break
 
     async def start(self):
-        cmd = f'npm run start -- --host 0.0.0.0 --port {FE_PORT}'
+        cmd = f'npm run start -- --host 0.0.0.0 --port {self.port}'
 
         self.process = await asyncio.create_subprocess_shell(
             cmd,

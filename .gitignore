@@ -18,18 +18,5 @@ server/*.db
 # config (containing secrets)
 server/config.ini
 
-
-# serverside utils
-*.sh
-.bash_history
-.cache
-.python_history
-.viminfo
-.local
-.angular-config.json
-.config
-.npm
-
 persist
-Dockerfile
 docker-compose.yml

@@ -34,4 +34,4 @@ class SocketManager(object):
     @staticmethod
     async def send_to_socket(sock, message):
         _logger.debug(f'send_to_socket: "{message}"')
-        await sock.send(json.dumps(message))
+        await sock.send_str(json.dumps(message))
