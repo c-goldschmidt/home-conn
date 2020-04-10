@@ -15,7 +15,7 @@ class ContextManager:
 
     def __init__(self, config):
         self.config = config
-        self.database = Database()
+        self.database = Database(config)
         self.task_manager = None
         self.socket_manager = SocketManager(self)
         self.user_manager = UserManager(self)

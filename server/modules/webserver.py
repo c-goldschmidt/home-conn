@@ -14,6 +14,11 @@ _logger = logging.getLogger('Module: Webserver')
 app_logger = logging.getLogger('Module: Webserver - APP')
 
 
+class CustomSocketResponse(web.WebSocketResponse):
+    def __bool__(self):
+        return not self.closed
+
+
 class WebserverModule(SSLMixin, Module):
     def __init__(self, *args):
         super().__init__(*args)
@@ -47,7 +52,7 @@ class WebserverModule(SSLMixin, Module):
         ]):
             return web.HTTPBadRequest(reason='expected a websocket connection')
 
-        ws_server = web.WebSocketResponse()
+        ws_server = CustomSocketResponse()
         await ws_server.prepare(request)
         await self.context_manager.socket_manager.register(ws_server)
 

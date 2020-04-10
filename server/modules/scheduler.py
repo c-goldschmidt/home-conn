@@ -55,6 +55,7 @@ class SchedulerModule(Module):
     async def start(self):
         self.running = True
 
+        _logger.info('starting scheduler')
         while self.running:
             await self.run_tasks()
             await asyncio.sleep(1)

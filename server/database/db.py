@@ -22,8 +22,8 @@ class CursorContext:
 
 
 class Database:
-    def __init__(self):
-        self.conn = sqlite3.connect('database.db')
+    def __init__(self, config):
+        self.conn = sqlite3.connect(config.server.get('database', 'database.db'))
         self._cursor = CursorContext(self.conn)
 
         for query in SQL_INIT_DB_QUERIES:

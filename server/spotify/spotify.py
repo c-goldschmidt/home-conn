@@ -165,7 +165,7 @@ class SpotifyCMD(BaseCmd):
 
     @ignore_exception
     async def _next(self):
-        print(self.sp.next_track())
+        self.sp.next_track()
         await self.update_playing_state()
 
     @ignore_exception

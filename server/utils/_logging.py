@@ -2,13 +2,13 @@ import logging
 import os
 import _locale
 
-from server.utils.constants import LOG_LEVEL, RESET_SEQ, BOLD_SEQ, COLORS, COLOR_SEQ, GREEN
+from server.utils.constants import RESET_SEQ, BOLD_SEQ, COLORS, COLOR_SEQ, GREEN
 
 _locale._getdefaultlocale = (lambda *args: ['en_US', 'utf8'])
 
 
 def formatter_message(message, use_color=True):
-    if LOG_LEVEL == logging.DEBUG:
+    if ColoredLogger.LOG_LEVEL == logging.DEBUG:
         message += ' ($BOLD%(filename)s$RESET:%(lineno)d)'
 
     if use_color:
@@ -54,10 +54,11 @@ class ColoredFormatter(logging.Formatter):
 
 class ColoredLogger(logging.Logger):
     FORMAT = "%(levelname)-$MAX_LVL_LENGTHs%(name)-$MAX_MSG_LENGTHs > %(message)s"
+    LOG_LEVEL = logging.INFO
 
     def __init__(self, name):
         ColoredFormatter.MAX_MSG_LENGTH = max(ColoredFormatter.MAX_MSG_LENGTH, len(name))
-        logging.Logger.__init__(self, name, LOG_LEVEL)
+        logging.Logger.__init__(self, name, self.LOG_LEVEL)
 
         color_formatter = ColoredFormatter(self.FORMAT, os.name == 'nt')
 
@@ -68,5 +69,6 @@ class ColoredLogger(logging.Logger):
         self.addHandler(console)
 
 
-def activate():
+def activate(log_level=logging.INFO):
+    ColoredLogger.LOG_LEVEL = log_level
     logging.setLoggerClass(ColoredLogger)
